@@ -1,149 +1,167 @@
-let wrapper = document.querySelector('.wrapper');
+document.addEventListener("DOMContentLoaded", () => {
+    let header = document.querySelector(".header");
+    header.style.visibility = "hidden";
 
-let pageSlider = new Swiper('.page', {
-    // обозначить классы для свайпера, чтобы понимал не только стандартные
-    wrapperClass: "page__wrapper",
-    slideClass: "page__screen",
+    let btn_confirm = document.getElementById("confirm");
+    let btn_close = document.getElementById("close");
+    let age_popup = document.getElementById("popup");
 
-    // вертикальный слайдер
-    direction: 'vertical',
+    btn_confirm.addEventListener("click", () => {
+        age_popup.style.visibility = "hidden";
+        header.style.visibility = "visible";
+        pageSlider.init();
+    });
+    btn_close.addEventListener("click", () => {
+        window.close();
+    });
 
-    // количество слайдов для показа
-    slidesPerView: 'auto',
+    let wrapper = document.querySelector('.wrapper');
 
-    // Включаем паралакс
-    parallax: true,
+    let pageSlider = new Swiper('.page', {
+        // обозначить классы для свайпера, чтобы понимал не только стандартные
+        wrapperClass: "page__wrapper",
+        slideClass: "page__screen",
 
-    // управление клавиатурой
-    keyboard: {
-        enabled: true,
-        onlyInViewport: false,
-        pageUpDown: true,
-    },
+        // вертикальный слайдер
+        direction: 'vertical',
 
-    // управление мышью
-    mousewheel: {
-        sensitivity: 1,
-        invert: false,
-    },
+        // количество слайдов для показа
+        slidesPerView: 'auto',
 
-    // отключение функционала если слайдов меньше чем нужно
-    watchOverflow: true,
+        // Включаем паралакс
+        parallax: true,
 
-    // скорость пролистывания
-    speed: 500,
-
-    // обновить свайпер при изменении элементов слайдера
-    observer: true,
-
-    // обновить свайпер при изменении родительских элементов
-    observeParents: true,
-
-    // обновить свайпер при изменении дочерних элементов
-    observeSlideChildren: true,
-
-    // буллеты, текущий слайд, прогрессбар
-    pagination: {
-        el: '.page__pagination',
-        type: 'bullets',
-        clickable: true,
-        bulletClass: "page__bullet",
-        bulletActiveClass: "page__bullet_active"
-    },
-
-    scrollbar: {
-        el: '.page__scrollbar',
-        dragClass: "page__drag-scroll",
-        draggable: true,
-    },
-
-    // отключить автоинициализацию
-    init: false,
-
-    // СОБЫТИЯ
-    on: {
-        init: function() {
-            menuSlider();
-            setScrollType();
-            wrapper.classList.add("_loaded");
-
+        // управление клавиатурой
+        keyboard: {
+            enabled: true,
+            onlyInViewport: false,
+            pageUpDown: true,
         },
-        slideChange: function() {
-            menuSliderRemoveActive();
-            menuLinks[pageSlider.realIndex].classList.add("_active")
+
+        // управление мышью
+        mousewheel: {
+            sensitivity: 1,
+            invert: false,
         },
-        resize: function() {
-            setScrollType();
+
+        // отключение функционала если слайдов меньше чем нужно
+        watchOverflow: true,
+
+        // скорость пролистывания
+        speed: 500,
+
+        // обновить свайпер при изменении элементов слайдера
+        observer: true,
+
+        // обновить свайпер при изменении родительских элементов
+        observeParents: true,
+
+        // обновить свайпер при изменении дочерних элементов
+        observeSlideChildren: true,
+
+        // буллеты, текущий слайд, прогрессбар
+        pagination: {
+            el: '.page__pagination',
+            type: 'bullets',
+            clickable: true,
+            bulletClass: "page__bullet",
+            bulletActiveClass: "page__bullet_active"
         },
-    },
 
-});
+        scrollbar: {
+            el: '.page__scrollbar',
+            dragClass: "page__drag-scroll",
+            draggable: true,
+        },
 
-// проход по навигации
-let menuLinks = document.querySelectorAll(".menu__link");
+        // отключить автоинициализацию
+        init: false,
 
-function menuSlider() {
+        // СОБЫТИЯ
+        on: {
+            init: function() {
+                menuSlider();
+                setScrollType();
+                wrapper.classList.add("_loaded");
 
-    if (menuLinks.length > 0) {
-        // какой слайд сейчас открыт тому дать активный
-        menuLinks[pageSlider.realIndex].classList.add("_active");
-        for (let index = 0; index < menuLinks.length; index++) {
-            const menuLink = menuLinks[index];
-            menuLink.addEventListener("click", function(e) {
-                // удаляем класс активный у ссылки
+            },
+            slideChange: function() {
                 menuSliderRemoveActive();
-                // переход к слайду с нужным индексом в меню
-                pageSlider.slideTo(index, 500);
-                menuLinks[index].classList.add("_active");
-                e.preventDefault();
-            });
-        }
-    }
-}
+                menuLinks[pageSlider.realIndex].classList.add("_active")
+            },
+            resize: function() {
+                setScrollType();
+            },
+        },
 
-function menuSliderRemoveActive() {
-    let menuLinkActive = document.querySelector(".menu__link._active");
-    // если такая ссылка существует
-    if (menuLinkActive) {
-        menuLinkActive.classList.remove("_active");
-    }
+    });
 
-}
+    // проход по навигации
+    let menuLinks = document.querySelectorAll(".menu__link");
 
-function setScrollType() {
-    if (wrapper.classList.contains("_free")) {
-        wrapper.classList.remove("_free");
-        pageSlider.params.freeMode.enabled = false;
-    }
+    function menuSlider() {
 
-    for (let index = 0; index < pageSlider.slides.length; index++) {
-        const pageSlide = pageSlider.slides[index];
-        const pageSlideContent = pageSlide.querySelector('.screen__content');
-        if (pageSlideContent) {
-            const pageSlideContentHeight = pageSlideContent.offsetHeight;
-            if (pageSlideContentHeight > window.innerHeight) {
-                wrapper.classList.add("_free");
-                pageSlider.params.freeMode.enabled = true;
-                break;
+        if (menuLinks.length > 0) {
+            // какой слайд сейчас открыт тому дать активный
+            menuLinks[pageSlider.realIndex].classList.add("_active");
+            for (let index = 0; index < menuLinks.length; index++) {
+                const menuLink = menuLinks[index];
+                menuLink.addEventListener("click", function(e) {
+                    // удаляем класс активный у ссылки
+                    menuSliderRemoveActive();
+                    // переход к слайду с нужным индексом в меню
+                    pageSlider.slideTo(index, 500);
+                    menuLinks[index].classList.add("_active");
+                    e.preventDefault();
+                });
             }
         }
     }
-}
 
-// запуск инициализации слайдера вручную
+    function menuSliderRemoveActive() {
+        let menuLinkActive = document.querySelector(".menu__link._active");
+        // если такая ссылка существует
+        if (menuLinkActive) {
+            menuLinkActive.classList.remove("_active");
+        }
 
-pageSlider.init();
+    }
+
+    function setScrollType() {
+        if (wrapper.classList.contains("_free")) {
+            wrapper.classList.remove("_free");
+            pageSlider.params.freeMode.enabled = false;
+        }
+
+        for (let index = 0; index < pageSlider.slides.length; index++) {
+            const pageSlide = pageSlider.slides[index];
+            const pageSlideContent = pageSlide.querySelector('.screen__content');
+            if (pageSlideContent) {
+                const pageSlideContentHeight = pageSlideContent.offsetHeight;
+                if (pageSlideContentHeight > window.innerHeight) {
+                    wrapper.classList.add("_free");
+                    pageSlider.params.freeMode.enabled = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // запуск инициализации слайдера вручную
 
 
-let mainSwiper = new Swiper('.main-slider-container', {
-    wrapperClass: "main-slider-wrapper",
-    slideClass: "main-slide",
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-    },
-    // автоматическое перелистывание
-    autoplay: {
-        delay: 1500,
-    },
+
+
+    let mainSwiper = new Swiper('.main-slider-container', {
+        wrapperClass: "main-slider-wrapper",
+        slideClass: "main-slide",
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        // автоматическое перелистывание
+        autoplay: {
+            delay: 1500,
+        },
+    });
 });
