@@ -309,7 +309,16 @@ h6 {
     .screen__title {
         font-size: 40px;
     }
-    .screen_text {
+    .screen_text ul li {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .screen__title {
+        font-size: 30px;
+    }
+    .screen_text ul li {
         font-size: 16px;
     }
 }
@@ -351,6 +360,10 @@ h6 {
     .main-info {
         padding: 10px;
         flex-direction: column;
+    }
+    .main-info-item {
+        width: 100%;
+        border-bottom: 1px solid #e00700;
     }
 }
 
